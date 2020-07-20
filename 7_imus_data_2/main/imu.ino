@@ -5,20 +5,28 @@
 // Create bno variable
 Adafruit_BNO055 bno = Adafruit_BNO055(-1);
 
-// Check I2C device address and correct line below (by default address is 0x29 or 0x28)
-//                                  id, address
 /*
- * lumbar=0
- * right=1
- * left=2
- * right foot=3
- * left foot =4
+ * Function: SetUpIMUs
+ *  Check I2C device address and remaps the axis depending of the
+ *  position of the BNO
+ *  
+ * Parameters:
+ *  ch (int)- MUX channel
+ *  pos(int)- positions of the BNO.
+ *            possible positions:
+ *              - lumbar -> 0
+ *              - right -> 1
+ *              - left -> 2
+ *              - right foot -> 3
+ *              - left foot -> 4
+ * Returns:
+ * 
  */
 void SetUpIMUs(int ch,
                int pos)
 {
   /* Initialise the sensor */
-  tcaselect(ch);
+  TcaSelect(ch);
   if(!bno.begin())
   {
     /* There was a problem detecting the BNO055 ... check your connections */
@@ -59,12 +67,23 @@ void SetUpIMUs(int ch,
 
     
 }
-/*
- * WIth the MUX channel and the position
- */
 
-data_vector ReadIMU(int ch, data_vector vector){
-  tcaselect(ch); // change I2C channel
+/*
+ * Function: ReadIMU
+ *  Reads certain values from a BNP
+ *  
+ * Parameters:
+ *  ch (int)- MUX channel
+ *  vector (data_vector)- vector to save the data
+ *  
+ * Returns:
+ *  vector(data_vector)- new vector with the updated data
+ * 
+ */
+data_vector ReadIMU(int ch,
+                    data_vector vector)
+{
+  TcaSelect(ch); // change I2C channel
   sensors_event_t event; // create event variable
   bno.getEvent(&event);
   vector.euler=event.orientation.y;
